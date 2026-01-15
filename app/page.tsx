@@ -6,6 +6,8 @@ import { useMicVAD } from '@ricky0123/vad-react';
 import { useAppStore } from './store/useAppStore';
 import { float32ToWav } from '@/utils/audio';
 import ShapeMorph from '@/components/ShapeMorph';
+import SidePanel from '@/components/SidePanel';
+import { Menu } from 'lucide-react';
 
 export default function LiveTranslator() {
   // Zustand Store
@@ -15,7 +17,8 @@ export default function LiveTranslator() {
     isListening, 
     setIsListening,
     isPlayingAudio,
-    setIsPlayingAudio
+    setIsPlayingAudio,
+    toggleSidePanel
   } = useAppStore();
 
   const [logs, setLogs] = useState<string[]>([]);
@@ -290,16 +293,31 @@ export default function LiveTranslator() {
   }, [isListening, setStatus, setIsPlayingAudio, vad]);
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#0a0a0c] text-white overflow-hidden">
+    <div className="relative flex flex-col items-center justify-center min-h-screen bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
+
+      {/* Hamburger Menu Button - Mobile Only */}
+      <button
+        onClick={toggleSidePanel}
+        className="fixed top-4 left-4 z-30 md:hidden p-2 rounded-lg hover:bg-[var(--border-light)] transition-colors"
+        aria-label="Open settings"
+      >
+        <Menu 
+          size={20} 
+          className="text-[var(--muted-foreground)]"
+        />
+      </button>
+
+      {/* Side Panel */}
+      <SidePanel />
 
       {/* Error Display - Fixed at top */}
       {permissionError && (
-        <div className="absolute top-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-red-900/50 backdrop-blur-xl border border-red-500/30 rounded-2xl p-4 z-50">
+        <div className="absolute top-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-red-100/20 backdrop-blur-xl border border-red-500/30 rounded-2xl p-4 z-50 dark:bg-red-900/20">
           <div className="flex items-start gap-3">
-            <div className="text-red-400 text-xl">⚠️</div>
+            <div className="text-red-500 dark:text-red-400 text-xl">⚠️</div>
             <div className="flex-1">
-              <h3 className="text-red-400 font-semibold mb-1 text-sm">Microphone Error</h3>
-              <p className="text-xs text-red-200/80">{permissionError}</p>
+              <h3 className="text-red-600 dark:text-red-400 font-semibold mb-1 text-sm">Microphone Error</h3>
+              <p className="text-xs text-red-700/80 dark:text-red-200/80">{permissionError}</p>
             </div>
           </div>
         </div>
@@ -327,7 +345,7 @@ export default function LiveTranslator() {
         <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-20">
           <button
             onClick={() => { unlockAudio(); playAudio(); }}
-            className="px-5 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-xl rounded-full font-light transition-all text-xs tracking-wider border border-white/10"
+            className="px-5 py-2 bg-[var(--surface-elevated)] hover:bg-[var(--border-light)] backdrop-blur-xl rounded-full font-light transition-all text-xs tracking-wider border border-[var(--border)] text-[var(--foreground)]"
           >
             tap to play
           </button>
@@ -338,17 +356,17 @@ export default function LiveTranslator() {
       <div className="absolute bottom-12 flex gap-8 opacity-30">
         <div 
           className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-            status === 'idle' ? 'bg-white scale-150' : 'bg-white/20'
+            status === 'idle' ? 'bg-[var(--foreground)] scale-150' : 'bg-[var(--muted-foreground)]'
           }`} 
         />
         <div 
           className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-            status === 'listening' || status === 'transcribing' || status === 'thinking' ? 'bg-cyan-400 scale-150' : 'bg-white/20'
+            status === 'listening' || status === 'transcribing' || status === 'thinking' ? 'bg-cyan-400 scale-150' : 'bg-[var(--muted-foreground)]'
           }`} 
         />
         <div 
           className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-            status === 'generating_audio' || status === 'speaking' ? 'bg-purple-400 scale-150' : 'bg-white/20'
+            status === 'generating_audio' || status === 'speaking' ? 'bg-purple-400 scale-150' : 'bg-[var(--muted-foreground)]'
           }`} 
         />
       </div>
@@ -361,9 +379,9 @@ export default function LiveTranslator() {
             className="group relative w-12 h-12 rounded-full transition-all duration-300 hover:scale-110"
           >
             {/* Shadow glow effect */}
-            <div className="absolute inset-0 rounded-full bg-red-500/20 blur-xl group-hover:bg-red-500/40 transition-all" />
+            <div className="absolute inset-0 rounded-full bg-red-500/20 blur-xl group-hover:bg-red-500/40 transition-all dark:bg-red-500/20 dark:group-hover:bg-red-500/40" />
             {/* Button content */}
-            <div className="relative w-full h-full rounded-full border-2 border-red-500/40 bg-black/40 backdrop-blur-sm flex items-center justify-center group-hover:border-red-500 group-hover:bg-red-500/10 transition-all">
+            <div className="relative w-full h-full rounded-full border-2 border-red-500/40 bg-black/20 backdrop-blur-sm flex items-center justify-center group-hover:border-red-500 group-hover:bg-red-500/10 transition-all">
               <div className="w-4 h-4 rounded-sm bg-red-500 group-hover:scale-110 transition-all" />
             </div>
           </button>

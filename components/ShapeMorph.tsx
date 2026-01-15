@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { useAppStore } from '@/app/store/useAppStore';
 
 interface ShapeMorphProps {
   status: 'idle' | 'listening' | 'transcribing' | 'thinking' | 'generating_audio' | 'speaking';
@@ -11,6 +12,7 @@ interface ShapeMorphProps {
 }
 
 export default function ShapeMorph({ status, stream, audioElement, onTap }: ShapeMorphProps) {
+  const theme = useAppStore((state) => state.theme);
   const [audioLevels, setAudioLevels] = useState<number[]>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -133,16 +135,20 @@ export default function ShapeMorph({ status, stream, audioElement, onTap }: Shap
     switch (status) {
       case 'idle':
         return {
-          gradient: 'radial-gradient(circle at 30% 30%, #64748b 0%, #475569 50%, #334155 100%)',
-          glowColor: 'bg-slate-500/10',
-          glowOpacity: [0.1, 0.2, 0.1],
-          shadowColor: 'rgba(100, 116, 139, 0.2)',
-          particleColor: 'bg-slate-400',
+          gradient: theme === 'light' 
+            ? 'radial-gradient(circle at 30% 30%, #cbd5e1 0%, #94a3b8 50%, #64748b 100%)'
+            : 'radial-gradient(circle at 30% 30%, #64748b 0%, #475569 50%, #334155 100%)',
+          glowColor: theme === 'light' ? 'bg-slate-300/10' : 'bg-slate-500/10',
+          glowOpacity: theme === 'light' ? [0.05, 0.1, 0.05] : [0.1, 0.2, 0.1],
+          shadowColor: theme === 'light' ? 'rgba(148, 163, 184, 0.2)' : 'rgba(100, 116, 139, 0.2)',
+          particleColor: theme === 'light' ? 'bg-slate-400' : 'bg-slate-400',
           showParticles: false,
         };
       case 'listening':
         return {
-          gradient: 'radial-gradient(circle at 30% 30%, #22d3ee 0%, #0891b2 50%, #164e63 100%)',
+          gradient: theme === 'light'
+            ? 'radial-gradient(circle at 30% 30%, #67e8f9 0%, #22d3ee 50%, #0891b2 100%)'
+            : 'radial-gradient(circle at 30% 30%, #22d3ee 0%, #0891b2 50%, #164e63 100%)',
           glowColor: 'bg-cyan-500/10',
           glowOpacity: [0.3, 0.6, 0.3],
           shadowColor: 'rgba(34, 211, 238, 0.3)',
@@ -152,7 +158,9 @@ export default function ShapeMorph({ status, stream, audioElement, onTap }: Shap
       case 'transcribing':
       case 'thinking':
         return {
-          gradient: 'radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 50%, #1e40af 100%)',
+          gradient: theme === 'light'
+            ? 'radial-gradient(circle at 30% 30%, #93c5fd 0%, #60a5fa 50%, #3b82f6 100%)'
+            : 'radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 50%, #1e40af 100%)',
           glowColor: 'bg-blue-500/10',
           glowOpacity: [0.2, 0.4, 0.2],
           shadowColor: 'rgba(59, 130, 246, 0.25)',
@@ -161,7 +169,9 @@ export default function ShapeMorph({ status, stream, audioElement, onTap }: Shap
         };
       case 'generating_audio':
         return {
-          gradient: 'radial-gradient(circle at 30% 30%, #a78bfa 0%, #8b5cf6 50%, #6d28d9 100%)',
+          gradient: theme === 'light'
+            ? 'radial-gradient(circle at 30% 30%, #c4b5fd 0%, #a78bfa 50%, #8b5cf6 100%)'
+            : 'radial-gradient(circle at 30% 30%, #a78bfa 0%, #8b5cf6 50%, #6d28d9 100%)',
           glowColor: 'bg-violet-500/10',
           glowOpacity: [0.25, 0.45, 0.25],
           shadowColor: 'rgba(139, 92, 246, 0.28)',
@@ -170,7 +180,9 @@ export default function ShapeMorph({ status, stream, audioElement, onTap }: Shap
         };
       case 'speaking':
         return {
-          gradient: 'radial-gradient(circle at 30% 30%, #c084fc 0%, #a855f7 50%, #7e22ce 100%)',
+          gradient: theme === 'light'
+            ? 'radial-gradient(circle at 30% 30%, #d8b4fe 0%, #c084fc 50%, #a855f7 100%)'
+            : 'radial-gradient(circle at 30% 30%, #c084fc 0%, #a855f7 50%, #7e22ce 100%)',
           glowColor: 'bg-purple-500/10',
           glowOpacity: [0.3, 0.7, 0.3],
           shadowColor: 'rgba(168, 85, 247, 0.4)',
@@ -179,10 +191,12 @@ export default function ShapeMorph({ status, stream, audioElement, onTap }: Shap
         };
       default:
         return {
-          gradient: 'radial-gradient(circle at 30% 30%, #64748b 0%, #475569 50%, #334155 100%)',
-          glowColor: 'bg-slate-500/10',
-          glowOpacity: [0.1, 0.2, 0.1],
-          shadowColor: 'rgba(100, 116, 139, 0.2)',
+          gradient: theme === 'light'
+            ? 'radial-gradient(circle at 30% 30%, #cbd5e1 0%, #94a3b8 50%, #64748b 100%)'
+            : 'radial-gradient(circle at 30% 30%, #64748b 0%, #475569 50%, #334155 100%)',
+          glowColor: theme === 'light' ? 'bg-slate-300/10' : 'bg-slate-500/10',
+          glowOpacity: theme === 'light' ? [0.05, 0.1, 0.05] : [0.1, 0.2, 0.1],
+          shadowColor: theme === 'light' ? 'rgba(148, 163, 184, 0.2)' : 'rgba(100, 116, 139, 0.2)',
           particleColor: 'bg-slate-400',
           showParticles: false,
         };
@@ -231,7 +245,7 @@ export default function ShapeMorph({ status, stream, audioElement, onTap }: Shap
               repeat: Infinity, 
               ease: "linear" 
             }}
-            className="absolute rounded-full border border-white/5"
+            className="absolute rounded-full border border-[var(--border)] border-opacity-10"
             style={{
               width: 300 + i * 40,
               height: 300 + i * 40,
@@ -310,7 +324,7 @@ export default function ShapeMorph({ status, stream, audioElement, onTap }: Shap
             scale: getOrbScale(),
             boxShadow: isActive
               ? `0px 0px 40px 10px ${config.shadowColor}`
-              : `0px 0px 20px 0px rgba(255, 255, 255, 0.1)`,
+              : `0px 0px 20px 0px ${theme === 'light' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.1)'}`,
           }}
           transition={{
             scale: {
