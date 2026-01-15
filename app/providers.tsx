@@ -7,13 +7,7 @@ import { useAppStore } from './store/useAppStore';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
-  const theme = useAppStore((state) => state.theme);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      document.documentElement.setAttribute('data-theme', theme);
-    }
-  }, [theme]);
+  // Theme handled by layout script and store persistence
 
   return (
     <QueryClientProvider client={queryClient}>

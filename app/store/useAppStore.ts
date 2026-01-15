@@ -19,9 +19,15 @@ interface AppState {
 
 const getInitialTheme = (): 'light' | 'dark' => {
   if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    if (stored === 'light' || stored === 'dark') {
-      return stored;
+    try {
+      const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+      if (stored === 'light' || stored === 'dark') {
+        return stored;
+      }
+      // Set default if not present
+      localStorage.setItem('theme', 'light');
+    } catch (e) {
+      console.warn('Failed to access localStorage:', e);
     }
   }
   return 'light';
